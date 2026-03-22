@@ -1,18 +1,30 @@
 import librosa
 import numpy as np
 
-def pitch_shift(audio, sr, n_steps=2):
-    return librosa.effects.pitch_shift(audio, sr=sr, n_steps=n_steps)
 
-def add_noise(audio, noise_factor=0.005):
-    noise = np.random.randn(len(audio))
-    return audio + noise_factor * noise
+def get_pitch_shift(gender, age):
+    pitch_shift = 0
 
-def speed_change(audio, speed=1.1):
-    return librosa.effects.time_stretch(audio, speed)
+    if gender == "male":
+        pitch_shift += 4
+    else:
+        pitch_shift -= 2
 
-def privacy_transform(audio, sr):
-    audio = pitch_shift(audio, sr)
-    audio = add_noise(audio)
-    audio = speed_change(audio)
-    return audio
+    if age == "old":
+        pitch_shift += 2
+    else:
+        pitch_shift -= 1
+
+    return pitch_shift
+
+
+def apply_privacy_transform(audio, sr, gender, age):
+    shift = get_pitch_shift(gender, age)
+
+    transformed_audio = librosa.effects.pitch_shift(
+        audio.astype(np.float32),
+        sr=sr,
+        n_steps=shift
+    )
+
+    return transformed_audio
