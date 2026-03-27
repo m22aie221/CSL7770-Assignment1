@@ -1,7 +1,0 @@
-librosa
-soundfile
-datasets
-transformers
-jiwer
-scipy
-onnxruntime
