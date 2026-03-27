@@ -379,6 +379,18 @@ def compute_rmse(manual, model, duration):
 
     return rmse, rmse / duration
 
+def process(signal, sr):
+    frame_len = int(0.025 * sr)
+    step = int(0.01 * sr)
+
+    labels = []
+
+    for i in range(0, len(signal) - frame_len, step):
+        frame = signal[i:i + frame_len]
+        labels.append(classify_frame(frame))
+
+    return labels
+
 if __name__ == "__main__":
     path = f"{BASE_PATH}/sample.wav"
 
@@ -387,12 +399,12 @@ if __name__ == "__main__":
 
     # Model output
     text, logits = get_logits_and_text(signal, sr)
-    #model_boundaries = get_model_boundaries(logits, duration)
+    model_boundaries = get_model_boundaries(logits, duration)
 
     # Manual segmentation
     labels = process(signal, sr)
     labels = smooth_labels(labels)
-    #manual_boundaries = get_boundaries(labels)
+    manual_boundaries = get_boundaries(labels)
 
 
 
